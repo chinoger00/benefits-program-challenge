@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public final class PrintOrderSimulator {
     /**
-     *
+     * Method to simulate print an order.
      * @param products
      */
     public static void printOrder(final Map<Product, Integer> products) {
