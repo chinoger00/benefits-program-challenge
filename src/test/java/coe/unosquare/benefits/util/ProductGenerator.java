@@ -16,8 +16,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import static java.lang.Math.round;
+
 /**
- * The type Product generator.
+ * The Product generator.
  */
 public final class ProductGenerator {
 
@@ -53,12 +55,17 @@ public final class ProductGenerator {
      */
     public static Map<Product, Integer> generateProducts(final Double expectedTotal) {
         HashMap<Product, Integer> products = new HashMap<>();
+        int quantity = 1;
         double total = 0.0;
         int id = 1;
         while (total < expectedTotal) {
-            double price = Double.parseDouble(new DecimalFormat("0.00")
-                                                .format(new Random().nextDouble() * 10.00));
-            int quantity = new Random().nextInt(5) + 1;
+            double price = Double.parseDouble(new DecimalFormat("0.0")
+                            .format(new Random().nextDouble() * 10.0));
+            price = round(price);
+            if((total + price) > expectedTotal){
+                price = expectedTotal - total;
+            }
+
             products.put(new Product("Product " + id, //product name
                             price,
                             new Random().nextInt(3) + 1), //type

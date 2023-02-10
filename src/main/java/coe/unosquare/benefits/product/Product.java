@@ -9,7 +9,7 @@
 package coe.unosquare.benefits.product;
 
 /**
- * The type Product.
+ * The Product definition.
  */
 public class Product {
     /** The Product name. **/

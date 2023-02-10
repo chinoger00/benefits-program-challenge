@@ -8,35 +8,77 @@
 
 package coe.unosquare.benefits.order;
 
+import coe.unosquare.benefits.exception.EmptyOrderException;
+import coe.unosquare.benefits.payment.CashPayment;
+import coe.unosquare.benefits.payment.OrderPayment;
 import coe.unosquare.benefits.product.Product;
 import coe.unosquare.benefits.util.ProductGenerator;
 import org.junit.jupiter.api.Test;
 import java.util.Map;
-import static coe.unosquare.benefits.util.PayOrderSimulator.payOrder;
+import static coe.unosquare.benefits.util.PayOrderSimulator.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class OrderTest {
+class   OrderTest {
     @Test
     void orderWithVisaMoreThan10ProductsDiscountTest() {
         Map<Product, Integer> products = ProductGenerator.generateProducts(15);
-        assertEquals(0.15, payOrder(products, "Visa"));
+        assertEquals(0.15, payOrderUsingVisaCard(products));
     }
 
     @Test
     void orderWithVisa10ProductsDiscountTest() {
         Map<Product, Integer> products = ProductGenerator.generateProducts(10);
-        assertEquals(0.15, payOrder(products, "Visa"));
+        assertEquals(0.15, payOrderUsingVisaCard(products));
     }
 
     @Test
     void orderWithVisa7ProductsDiscountTest() {
         Map<Product, Integer> products = ProductGenerator.generateProducts(7);
-        assertEquals(0.10, payOrder(products, "Visa"));
+        assertEquals(0.10, payOrderUsingVisaCard(products));
     }
 
     @Test
     void orderWithVisaLessThan7ProductsDiscountTest() {
         Map<Product, Integer> products = ProductGenerator.generateProducts(5);
-        assertEquals(0.05, payOrder(products, "Visa"));
+        assertEquals(0.05, payOrderUsingVisaCard(products));
+    }
+
+    @Test
+    void orderWithMasterCardMoreThan100DollarsDiscountTest() {
+        Map<Product, Integer> products = ProductGenerator.generateProducts(150.0);
+        assertEquals(0.17, payOrderUsingMasterCard(products));
+    }
+
+    @Test
+    void orderWithMasterCard100DollarsDiscountTest() {
+        Map<Product, Integer> products = ProductGenerator.generateProducts(100.0);
+        assertEquals(0.17, payOrderUsingMasterCard(products));
+    }
+
+    @Test
+    void orderWithMasterCard75DollarsDiscountTest() {
+        Map<Product, Integer> products = ProductGenerator.generateProducts(75.0);
+        assertEquals(0.12, payOrderUsingMasterCard(products));
+    }
+
+    @Test
+    void orderWithMasterCardLessThan75DollarsDiscountTest() {
+        Map<Product, Integer> products = ProductGenerator.generateProducts(50.0);
+        assertEquals(0.08, payOrderUsingMasterCard(products));
+    }
+
+    @Test
+    void orderWithCashPayment75DollarsDiscountTest() {
+        Map<Product, Integer> products = ProductGenerator.generateProducts(50.0);
+        assertEquals(0.0, payOrderUsingCash(products));
+    }
+
+    @Test
+    void emptyOrderTest() {
+        assertThrows(EmptyOrderException.class, () -> {
+            OrderPayment cashPayment = new CashPayment(null);
+            cashPayment.payOrder();
+        });
     }
 }
